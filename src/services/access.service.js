@@ -6,7 +6,8 @@ const crypto = require ("crypto");
 const KeyToken = require("./keytoken.service");
 const { createTokenPair } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
-const { BadRequestError, InternalServerError } = require("../core/err.response");
+const { BadRequestError, InternalServerError, UnauthorizedRequestError } = require("../core/err.response");
+const { findByEmail } = require("./shop.service");
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -16,6 +17,43 @@ const RoleShop = {
 }
 
 class AccessService { 
+    //Signin
+    /*
+        1- check email
+        2- match pw
+        3- create AT & PT and save
+        4- generate token
+        5- get data and return login
+    */
+    static login = async ({ email, password, refreshToken}) => {
+        //1.
+        const foundShop = await findByEmail({email});
+        if(!foundShop) {
+            throw new BadRequestError('Shop not registered!'); // For security, dev can change the message into the code which is defined internally
+        }
+        //2.
+        const match = bscypt.compare(password, foundShop.password);
+        if(!match) {
+            throw new UnauthorizedRequestError('Authentication error');
+        }
+        //3.
+        const privateKey = crypto.randomBytes(64).toString('hex');
+        const publicKey = crypto.randomBytes(64).toString('hex');
+        const {_id: userId} = foundShop
+        const tokens = await createTokenPair({userId: userId, email}, publicKey, privateKey);
+        await KeyToken.createKeyToken({
+            userId: userId,
+            publicKey,
+            privateKey,
+            refreshToken: tokens.refreshToken,
+        })
+        return {
+            shop: getInfoData({ fields: ['_id', 'name', 'email'], object: foundShop}),
+            tokens,
+        }
+    }
+
+
     // Service will be used multiple time --> write fn as static fn for quick access without initialize (new Service())
     static signUp = async ({name, email, password}) => {
         //step1: check valid email
