@@ -1,8 +1,9 @@
 ' use strict '
 
 const keytokenModel = require("../models/keytoken.model");
+const {Types} = require("mongoose")
 
-class KeyToken {
+class KeyTokenService {
     static createKeyToken = async ({ userId, publicKey, privateKey, refreshToken }) => {
         // public key gen by asymmetric algorithm will be a buffer
         // const publicKeyString = publicKey.toString();
@@ -21,6 +22,14 @@ class KeyToken {
         const tokens = await keytokenModel.findOneAndUpdate(filter, update, options);
         return tokens ? tokens.publicKey : null
     }
+
+    static findByUserId = async(userId) => {
+        return await keytokenModel.findOne({user: new Types.ObjectId(userId)}).lean();
+    }
+
+    static removeKeyById = async (id) => {
+        return await keytokenModel.findByIdAndRemove(id);
+    }
 }
 
-module.exports = KeyToken
+module.exports = KeyTokenService
