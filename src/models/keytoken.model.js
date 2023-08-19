@@ -18,10 +18,14 @@ var keytokenSchema = new Schema({
         type: String,
         required: true,
     },
-    refreshToken: {
+    refreshTokensUsed: { // RT that have been used --> check for security and create blacklist
         type: Array,
         default: [],
     },
+    refreshToken : {
+        type: String,
+        required: true
+    }
 }, {
     collection: COLLECTION_NAME,
     timestamps: true,

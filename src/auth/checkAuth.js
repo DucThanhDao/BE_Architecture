@@ -27,7 +27,6 @@ const permission = (permission) => {
         if(!req?.objKey?.permissions) {
             throw new NotFoundRequestError('Permissions not found')
         }
-        console.log('permission:::', req.objKey.permissions);
         const validPermission = req.objKey.permissions.includes(permission);
         if(!validPermission){
             throw new UnauthorizedRequestError('Permission Denied')

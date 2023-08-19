@@ -2,7 +2,7 @@
 
 const express = require('express');
 const { apiKey, permission } = require('../auth/checkAuth');
-const { asyncHandler } = require('../middlewares/handlerError.middleware');
+const { asyncHandler } = require('../helpers/handlerError');
 const router = express.Router();
 
 /*
