@@ -61,7 +61,6 @@ const authenticationV2 = asyncHandler(async (req, res, next) => {
             req.keyStore = keyStore;
             req.user = decodeUser;
             req.refreshToken = refreshToken;
-            console.log("OK:::", req.keyStore, req.user, req.refreshToken)
             return next();
         } catch (error) {
             throw error;
