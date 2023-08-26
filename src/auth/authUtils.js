@@ -19,7 +19,7 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
     });
     const refreshToken = JWT.sign(payload, privateKey, {
         // algorithm: 'RS256',
-        expiresIn: '7 days'
+        expiresIn: '7000 days'
     });
     JWT.verify(accessToken, publicKey, (err, decode) => {
         if (err) {
@@ -61,7 +61,6 @@ const authenticationV2 = asyncHandler(async (req, res, next) => {
             req.keyStore = keyStore;
             req.user = decodeUser;
             req.refreshToken = refreshToken;
-            console.log("OK:::", req.keyStore, req.user, req.refreshToken)
             return next();
         } catch (error) {
             throw error;
