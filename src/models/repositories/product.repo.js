@@ -30,6 +30,19 @@ const searchProductByUser = async({keySearch}) => {
     return results
 }
 
+const findAllProduct = async ({limit, sort, page, filter, select}) => {
+    const skip = (page - 1)*limit;
+    const sortBy = sort === 'ctime' ? {_id: -1} : {_id: 1};
+    const products = await product.find(filter)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select(select)
+    .lean()
+
+    return products
+}
+
 //#region PUT
 const publishProductByShop = async({product_shop,product_id}) => {
     const foundShop = await product.findOneAndUpdate({
@@ -71,4 +84,5 @@ module.exports = {
     findAllPublishForShop,
     unpublishProductByShop,
     searchProductByUser,
+    findAllProduct
 }
