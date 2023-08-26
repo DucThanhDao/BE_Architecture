@@ -1,4 +1,5 @@
 ' use strict '
+const { getunSelectData } = require('../../utils');
 const {product, electronic, clothing, furniture} = require('../product.model');
 const {Types} = require('mongoose');
 //Query
@@ -30,7 +31,7 @@ const searchProductByUser = async({keySearch}) => {
     return results
 }
 
-const findAllProduct = async ({limit, sort, page, filter, select}) => {
+const findAllProducts = async ({limit, sort, page, filter, select}) => {
     const skip = (page - 1)*limit;
     const sortBy = sort === 'ctime' ? {_id: -1} : {_id: 1};
     const products = await product.find(filter)
@@ -39,7 +40,13 @@ const findAllProduct = async ({limit, sort, page, filter, select}) => {
     .limit(limit)
     .select(select)
     .lean()
+    return products
+}
 
+const findProduct = async ({product_id, unselect}) => {
+    const products = await product.findById(product_id)
+    .select(getunSelectData(unselect))
+    .lean()
     return products
 }
 
@@ -84,5 +91,6 @@ module.exports = {
     findAllPublishForShop,
     unpublishProductByShop,
     searchProductByUser,
-    findAllProduct
+    findAllProducts,
+    findProduct,
 }

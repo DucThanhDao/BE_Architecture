@@ -72,10 +72,19 @@ class ProductController {
         }).send(res)
     }
 
-    findAllProduct = async(req, res, next) => {
+    findAllProducts = async(req, res, next) => {
         new SuccessRespone({
-            message: 'Get Search List Succesfully',
-            metadata: await ProductService.findAllProduct(req.query)
+            message: 'Get Products List Succesfully',
+            metadata: await ProductService.findAllProducts(req.query)
+        }).send(res)
+    }
+
+    findProduct = async(req, res, next) => {
+        new SuccessRespone({
+            message: 'Get Specific Product Succesfully',
+            metadata: await ProductService.findProduct({
+                product_id: req.params.product_id,
+            })
         }).send(res)
     }
 
