@@ -89,7 +89,17 @@ class ProductController {
     }
 
     //#endregion
-
+    //#region PUT
+    updateProduct =  async(req, res, next) => {
+        new SuccessRespone({
+            message: 'Update Product Succesfully',
+            metadata: await ProductService.updateProduct(req.body.product_type, req.params.productId, {
+                ...req.body,
+                product_shop: req.user.userId,
+            })
+        }).send(res)
+    }
+    //#endregion
     
 }
 

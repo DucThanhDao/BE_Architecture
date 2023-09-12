@@ -83,6 +83,12 @@ const unpublishProductByShop = async({product_shop,product_id}) => {
     return foundShop;
 }
 
+const updateProductById = async ({productId, bodyUpdate, model, isNew = true}) => {
+    return model.findByIdAndUpdate(productId, bodyUpdate, {
+        new: isNew,
+    })
+}
+
 //#endregion PUT
 
 module.exports = {
@@ -93,4 +99,5 @@ module.exports = {
     searchProductByUser,
     findAllProducts,
     findProduct,
+    updateProductById
 }
