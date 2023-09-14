@@ -66,15 +66,40 @@ class ProductController {
     }
 
     getListSearchProduct = async(req, res, next) => {
-        console.log(req.params);
         new SuccessRespone({
             message: 'Get Search List Succesfully',
             metadata: await ProductService.searchProductByUser(req.params)
         }).send(res)
     }
 
-    //#endregion
+    findAllProducts = async(req, res, next) => {
+        new SuccessRespone({
+            message: 'Get Products List Succesfully',
+            metadata: await ProductService.findAllProducts(req.query)
+        }).send(res)
+    }
 
+    findProduct = async(req, res, next) => {
+        new SuccessRespone({
+            message: 'Get Specific Product Succesfully',
+            metadata: await ProductService.findProduct({
+                product_id: req.params.product_id,
+            })
+        }).send(res)
+    }
+
+    //#endregion
+    //#region PUT
+    updateProduct =  async(req, res, next) => {
+        new SuccessRespone({
+            message: 'Update Product Succesfully',
+            metadata: await ProductService.updateProduct(req.body.product_type, req.params.productId, {
+                ...req.body,
+                product_shop: req.user.userId,
+            })
+        }).send(res)
+    }
+    //#endregion
     
 }
 

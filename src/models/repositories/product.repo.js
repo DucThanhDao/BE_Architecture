@@ -1,4 +1,5 @@
 ' use strict '
+const { getunSelectData } = require('../../utils');
 const {product, electronic, clothing, furniture} = require('../product.model');
 const {Types} = require('mongoose');
 //Query
@@ -28,6 +29,25 @@ const searchProductByUser = async({keySearch}) => {
         $text: {$search: regexSearch},
     }, {score: {$meta: 'textScore'}}).lean()
     return results
+}
+
+const findAllProducts = async ({limit, sort, page, filter, select}) => {
+    const skip = (page - 1)*limit;
+    const sortBy = sort === 'ctime' ? {_id: -1} : {_id: 1};
+    const products = await product.find(filter)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select(select)
+    .lean()
+    return products
+}
+
+const findProduct = async ({product_id, unselect}) => {
+    const products = await product.findById(product_id)
+    .select(getunSelectData(unselect))
+    .lean()
+    return products
 }
 
 //#region PUT
@@ -63,6 +83,12 @@ const unpublishProductByShop = async({product_shop,product_id}) => {
     return foundShop;
 }
 
+const updateProductById = async ({productId, bodyUpdate, model, isNew = true}) => {
+    return model.findByIdAndUpdate(productId, bodyUpdate, {
+        new: isNew,
+    })
+}
+
 //#endregion PUT
 
 module.exports = {
@@ -71,4 +97,7 @@ module.exports = {
     findAllPublishForShop,
     unpublishProductByShop,
     searchProductByUser,
+    findAllProducts,
+    findProduct,
+    updateProductById
 }
