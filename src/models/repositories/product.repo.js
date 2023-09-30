@@ -1,5 +1,5 @@
 ' use strict '
-const { getunSelectData } = require('../../utils');
+const { getUnSelectData } = require('../../utils');
 const {product, electronic, clothing, furniture} = require('../product.model');
 const {Types} = require('mongoose');
 //Query
@@ -45,7 +45,7 @@ const findAllProducts = async ({limit, sort, page, filter, select}) => {
 
 const findProduct = async ({product_id, unselect}) => {
     const products = await product.findById(product_id)
-    .select(getunSelectData(unselect))
+    .select(getUnSelectData(unselect))
     .lean()
     return products
 }
