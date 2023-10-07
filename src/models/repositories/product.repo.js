@@ -1,5 +1,5 @@
 ' use strict '
-const { getUnSelectData } = require('../../utils');
+const { getUnSelectData, convertToObjectMongodb } = require('../../utils');
 const {product, electronic, clothing, furniture} = require('../product.model');
 const {Types} = require('mongoose');
 //Query
@@ -48,6 +48,10 @@ const findProduct = async ({product_id, unselect}) => {
     .select(getUnSelectData(unselect))
     .lean()
     return products
+}
+
+const getProductById = async (productId) => {
+    return await product.findOne({_id: convertToObjectMongodb(productId)}).lean();
 }
 
 //#region PUT
@@ -99,5 +103,6 @@ module.exports = {
     searchProductByUser,
     findAllProducts,
     findProduct,
-    updateProductById
+    updateProductById,
+    getProductById
 }
